@@ -1,0 +1,70 @@
+﻿@model List<Recipes>;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4 text-danger mb-3">Let's cook something tasty!</h1>
+    <div class="container">
+        <div class="col-12">
+            <div class="d-grid">
+                <a class="btn btn-danger" asp-controller="Home" asp-action="Add">
+                   Agregar
+                </a>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th scope="col text-danger">Name</th>
+                    <th scope="col text-danger">Ingredients</th>
+                    <th scope="col text-danger">Rating</th>
+                    <th scope="col text-danger">Difficulty</th>
+                    <th scope="col text-danger">Category</th>
+                    <th scope="col text-danger">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @{
+                    if (Model == null)
+                    {
+                        <tr>
+                            <h4 class="text-secondary">Haven't been in the kitchen yet :(</h4>
+                            <p class="text-secondary">No recipes found.</p>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var recipe in Model)
+                        {
+                            <tr>
+                                <td><i class="fa-solid fa-utensils text-danger"></i></td>
+                                <td>@recipe.Name</td>
+                                <td>
+                                    @{
+                                        foreach (var ingredient in recipe.Ingredients)
+                                        {
+                                            @ingredient.Name
+                                            <br/>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-route-Id="@recipe.Id" asp-action="IncreaseRating" asp-controller="Home"><i class="fa-solid fa-plus text-danger"></i></a>
+                                    @recipe.Rating
+                                    <a asp-route-Id="@recipe.Id" asp-action="" asp-controller="Home"><i class="fa-solid fa-minus text-danger"></i></a>
+                                </td>
+                                <td>@recipe.Difficulty</td>
+                                <td>@recipe.CategoryName</td>
+                                <td></td>
+                            </tr>
+                        }
+                    }
+                }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

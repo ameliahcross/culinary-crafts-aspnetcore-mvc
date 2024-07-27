@@ -1,0 +1,25 @@
+# Build Folders (binaries)
+bin/
+obj/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+Generated\
+
+# Backup & report files
+*.bak
+*.log
+
+# Rider specific
+.idea/
+.vs/
+
+# OS generated files
+.DS_Store
+Thumbs.db
