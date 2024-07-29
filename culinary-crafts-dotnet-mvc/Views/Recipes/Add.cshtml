@@ -1,0 +1,52 @@
+@model culinary_crafts_dotnet_mvc.Models.Recipes
+
+@{
+    ViewData["Title"] = "Add recipe";
+}
+
+<!DOCTYPE html>
+
+<div class="text-center">
+    <h1 class="display-4 text-danger mb-3">Add a recipe.</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <form asp-controller="Home" asp-action="AddNewRecipe" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Name</label>
+                        <input asp-for="Name" type="text" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        @{
+                        foreach (var ingredient in Model.Ingredients)
+                            {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selectedIngredients" value="@ingredient.Id"
+                                       id="@ingredient-@ingredient.Id">
+                                <label class="form-check-label" for="@ingredient-@ingredient.Id">
+                                    @ingredient.Name
+                                </label>
+                            </div>
+                            }
+                        }
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Rating" class="form-label">Rating</label>
+                        <input asp-for="Rating" type="number" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Difficulty" class="form-label">Difficulty</label>
+                        <input asp-for="Difficulty" type="number" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="Category" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))" class="form-select">
+                            <option value="" selected>Select a category</option>
+                        </select>
+                    </div>
+                    <input type="hidden" asp-route-Id="Id">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

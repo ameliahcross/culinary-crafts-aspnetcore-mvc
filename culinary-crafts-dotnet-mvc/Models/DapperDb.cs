@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.Data.SqlClient;
 using Dapper;
 
@@ -5,7 +6,7 @@ namespace culinary_crafts_dotnet_mvc.Models;
 
 public class DapperDb
 {
-    SqlConnection conn = new SqlConnection("Database=culinarycrafts__db; User Id=sa;Password=SqlServer1234!; Trusted_Connection=False; TrustServerCertificate=True;");
+    SqlConnection conn = new SqlConnection("Database=culinarycrafts__db; User Id=sa;Password=SqlServer1234!; Trusted_Connection=False; TrustServerCertificate=True; MultipleActiveResultSets=True;");
 
     public async Task<List<Recipes>> GetAllRecipesWithIngredients()
     {
@@ -43,10 +44,44 @@ public class DapperDb
         return recipes;
     }
 
+    public async Task<List<Ingredients>> GetAllIngredients()
+    {
+        var ingredients = await conn.QueryAsync<Ingredients>("select * from Ingredients");
+        return ingredients.ToList();
+    }
+    
+    public async Task<List<Categories>> GetAllCategories()
+    {
+        var categories = await conn.QueryAsync<Categories>("select * from Categories");
+        return categories.ToList();
+    }
     public async Task<int> GetRecipeById(int Id)
     {
         var recipeId = await conn.QuerySingleOrDefaultAsync<int>($"select * from Recipes where Id={Id}");
         return recipeId;
+    }
+    
+    public async Task<int> AddRecipe(Recipes recipe)
+    {
+        var parameters = new DynamicParameters();
+
+        parameters.Add("@Name", recipe.Name);
+        parameters.Add("@Rating", recipe.Rating);
+        parameters.Add("@Difficulty", recipe.Difficulty);
+        parameters.Add("@Category", recipe.Category);
+        var newRecipeId = await 
+            conn.ExecuteScalarAsync<int>(
+                $"Insert into Recipes (Name,Rating,Difficulty,Category) values (@Name, @Rating,@Difficulty,@Category); select SCOPE_IDENTITY();", parameters);
+        return newRecipeId;
+    }
+
+    public async Task AddRecipeIngredient(RecipeIngredient recipeIngredient)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("@IngredientId", recipeIngredient.IngredientId);
+        parameters.Add("@RecipeId", recipeIngredient.RecipeId);
+
+        await conn.ExecuteAsync($"insert into RecipeIngredient (IngredientId,RecipeId) values (@IngredientId, @RecipeId)",parameters);
     }
     
     public async Task<Recipes> IncreaseRating(int Id)
